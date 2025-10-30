@@ -6,7 +6,7 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches:
-      - deploy-test  # Mude para 'master' se for o caso
+      - main # Mude para 'master' se for o caso
 
 # 2. Permissões: Dar permissão para a Action escrever nas GitHub Pages
 permissions:
