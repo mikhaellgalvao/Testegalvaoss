@@ -1,0 +1,5 @@
+{
+  "name": "Portal Galvão Drones",
+  "description": "An internal portal for Galvão Drones employees to manage products, suppliers, users, and access sales tools. It includes features for product consultation, a payment simulator, and AI-powered sales assistance.",
+  "requestFramePermissions": []
+}
