@@ -1,0 +1,54 @@
+# .github/workflows/deploy.yml
+
+name: Deploy React App to GitHub Pages
+
+# 1. Gatilho: Rodar quando houver um push na branch 'main'
+on:
+  push:
+    branches:
+      - deploy-test  # Mude para 'master' se for o caso
+
+# 2. Permissões: Dar permissão para a Action escrever nas GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  # 3. Job de Build: Instala dependências e gera os arquivos estáticos
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20 # Usando uma versão LTS recente
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci # 'ci' é mais rápido e seguro que 'install'
+      
+      - name: Build application
+        # O script 'npm run build' vai usar o 'base: /Testegalvaoss/' do seu vite.config.ts
+        run: npm run build
+      
+      - name: Upload artifact
+        # Salva o resultado do build (pasta 'dist') para o próximo job usar
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  # 4. Job de Deploy: Pega os arquivos do build e publica nas Pages
+  deploy:
+    needs: build # Só roda depois que o 'build' terminar
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }} # Mostra a URL no log da Action
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
